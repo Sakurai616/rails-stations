@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>座席表</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid black;
+      text-align: center;
+      padding: 8px;
+    }
+    .screen {
+      text-align: center;
+      font-weight: bold;
+      background-color: #f0f0f0;
+    }
+    .reserved {
+      background-color: #d3d3d3; /* 予約済みの席をグレーに */
+      color: #888; /* 文字の色を薄く */
+    }
+  </style>
+</head>
+<body>
+  <h1>座席表</h1>
+  <table>
+    <!-- スクリーンを表示 -->
+    <tr>
+      <td colspan="5" class="screen">スクリーン</td>
+    </tr>
+
+    <!-- 座席を表示 -->
+    <% @sheets.group_by(&:row).each do |row, sheets| %>
+      <tr>
+        <% sheets.each do |sheet| %>
+          <td class="<%= 'reserved' if sheet.reservations.exists?(schedule: @schedule, date: @date) %>">
+            <% if sheet.reservations.exists?(schedule: @schedule, date: @date) %>
+              <%= "#{sheet.row}-#{sheet.column}" %>
+            <% else %>
+              <%= link_to "#{sheet.row}-#{sheet.column}", 
+                new_movie_schedule_reservation_path(@movie, @schedule, date: @date, sheet_id: sheet.id) %>
+            <% end %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>    
+  </table>
+</body>
+</html>

@@ -1,5 +1,5 @@
-FROM ruby:3.3.3
-RUN apt-get update -qq
+FROM ruby:3.3.6
+RUN apt-get update -qq && apt-get install -y default-mysql-client
 RUN apt-get install --no-install-recommends -y build-essential git libvips pkg-config nodejs npm && npm install n -g && n lts
 RUN npm install -g yarn
 RUN mkdir /app

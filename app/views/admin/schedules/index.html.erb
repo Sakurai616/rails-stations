@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>スケジュール一覧</title>
+  <style>
+    h2 {
+      margin-top: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 5px 0;
+    }
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .movie-actions {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<h1>スケジュール一覧</h1>
+
+<% @schedules.group_by(&:movie).each do |movie, schedules| %>
+  <h2>
+    映画ID: <%= movie.id %>, タイトル: <%= link_to movie.name, admin_movie_path(movie) %>
+  </h2>
+
+  <div class="movie-actions">
+    <%= link_to "新規スケジュールを追加", new_admin_movie_schedule_path(movie), class: "new-schedule-link" %>
+  </div>
+
+  <ul>
+    <% schedules.each do |schedule| %>
+      <li>
+        開始: <%= schedule.start_time.strftime('%H:%M') %>, 終了: <%= schedule.end_time.strftime('%H:%M') %> 
+        (<%= link_to "詳細", admin_schedule_path(schedule) %>)
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+</body>
+</html>

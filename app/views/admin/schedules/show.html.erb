@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>スケジュール詳細</title>
+  <style>
+    table {
+      width: 50%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+    th {
+      background-color: #f4f4f4;
+      text-align: left;
+    }
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<h1>スケジュール詳細</h1>
+
+<h2>映画情報</h2>
+<table>
+  <tr>
+    <th>映画ID</th>
+    <td><%= link_to @schedule.movie.id, admin_movie_path(@schedule.movie) %></td>
+  </tr>
+  <tr>
+    <th>タイトル</th>
+    <td><%= @schedule.movie.name %></td>
+  </tr>
+</table>
+
+<h2>スケジュール情報</h2>
+<table>
+  <tr>
+    <th>スケジュールID</th>
+    <td><%= @schedule.id %></td>
+  </tr>
+  <tr>
+    <th>開始時刻</th>
+    <td><%= @schedule.start_time.strftime('%H:%M') %></td>
+  </tr>
+  <tr>
+    <th>終了時刻</th>
+    <td><%= @schedule.end_time.strftime('%H:%M') %></td>
+  </tr>
+  <tr>
+    <th>作成日時</th>
+    <td><%= @schedule.created_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
+  </tr>
+  <tr>
+    <th>更新日時</th>
+    <td><%= @schedule.updated_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
+  </tr>
+</table>
+
+<div style="margin-top: 20px;">
+  <%= link_to "編集", edit_admin_schedule_path(@schedule) %> |
+  <%= link_to "削除", admin_schedule_path(@schedule), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' } %>
+</div>
+
+</body>
+</html>

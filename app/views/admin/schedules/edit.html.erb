@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>スケジュール編集</title>
+  <style>
+    label {
+      display: block;
+      margin: 5px 0;
+    }
+    input[type="datetime-local"] {
+      padding: 5px;
+    }
+    input[type="submit"], button {
+      margin-top: 10px;
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>スケジュール編集</h1>
+
+  <h2>映画: <%= @schedule.movie.name %> (ID: <%= @schedule.movie.id %>)</h2>
+
+  <%= form_with model: @schedule, url: admin_schedule_path(@schedule), method: :put do |f| %>
+    <div>
+      <%= f.label :start_time, '開始時刻' %>
+      <%= f.time_field :start_time, value: @schedule.start_time.strftime('%H:%M') %>
+    </div>
+
+    <div>
+      <%= f.label :end_time, '終了時刻' %>
+      <%= f.time_field :end_time, value: @schedule.end_time.strftime('%H:%M') %>
+    </div>
+
+    <div>
+      <%= f.submit '更新する' %>
+    </div>
+  <% end %>
+
+  <%= link_to '削除する', admin_schedule_path(@schedule), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' } %>
+
+  <%= link_to 'スケジュール詳細に戻る', admin_schedule_path(@schedule) %> |
+  <%= link_to 'スケジュール一覧に戻る', admin_schedules_path %>
+</body>
+</html>

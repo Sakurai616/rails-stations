@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>映画詳細</title>
+  <style>
+    .movie-details {
+      margin-bottom: 20px;
+    }
+    .movie-details p {
+      font-size: 16px;
+    }
+    .schedules {
+      margin-top: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+<h1>映画詳細</h1>
+
+<div class="movie-details">
+  <h2><%= @movie.name %></h2>
+  <p><strong>ID:</strong> <%= @movie.id %></p>
+  <p><strong>公開年:</strong> <%= @movie.year %></p>
+  <p><strong>概要:</strong> <%= @movie.description %></p>
+  <p><strong>上映中:</strong> <%= @movie.is_showing ? '上映中' : '上映予定' %></p>
+  <p><strong>画像URL:</strong> <%= link_to "画像を見る", @movie.image_url, target: "_blank", rel: "noopener" %></p>
+  <p><strong>登録日時:</strong> <%= @movie.created_at.strftime('%Y-%m-%d %H:%M:%S') %></p>
+  <p><strong>更新日時:</strong> <%= @movie.updated_at.strftime('%Y-%m-%d %H:%M:%S') %></p>
+
+  <%= link_to "編集", edit_admin_movie_path(@movie), class: "button" %>
+</div>
+
+<h2>スケジュール一覧</h2>
+<% if @schedules.any? %>
+  <table class="schedules">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>開始時刻</th>
+        <th>終了時刻</th>
+        <th>編集</th>
+        <th>削除</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @schedules.each do |schedule| %>
+        <tr>
+          <td><%= link_to schedule.id, admin_schedule_path(schedule) %></td>
+          <td><%= schedule.start_time.strftime('%H:%M') %></td>
+          <td><%= schedule.end_time.strftime('%H:%M') %></td>
+          <td><%= link_to "編集", edit_admin_schedule_path(schedule) %></td>
+          <td><%= link_to "削除", admin_schedule_path(schedule), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>この映画にはスケジュールが設定されていません。</p>
+<% end %>
+
+<%= link_to "新しいスケジュールを追加", new_admin_movie_schedule_path(@movie), class: "button" %>
+
+<%= form_with url: reservation_movie_path(@movie), method: :get, local: true do |form| %>
+    <!-- 1週間先まで選択可能な日付のプルダウンメニュー -->
+    <div>
+      <label for="date">日付を選択</label>
+      <%= form.select :date, options_for_select(@dates.map { |date| [date.strftime('%Y-%m-%d'), date] }, Date.today), { prompt: '日付を選んでください' }, { id: 'date', class: 'form-control' } %>
+    </div>
+  
+    <!-- 上映スケジュールリストから選択するプルダウンメニュー -->
+    <div>
+      <label for="schedule_id">上映時間を選択</label>
+      <%= form.select :schedule_id, 
+            options_for_select(@schedules.map { |schedule| 
+              ["#{schedule.start_time.strftime('%H:%M')} - #{schedule.end_time.strftime('%H:%M')}", schedule.id] 
+            }), 
+            { prompt: '上映時間を選んでください' }, 
+            { id: 'schedule_id', class: 'form-control' } %>
+    </div>
+    
+  
+    <!-- 予約ボタン -->
+    <div>
+      <%= form.submit '座席を予約する', class: 'btn btn-primary' %>
+    </div>
+<% end %>
+</body>
+</html>

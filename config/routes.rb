@@ -1,10 +1,34 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  devise_for :users, skip: [:registrations]
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  as :user do
+    get 'users/new', to: 'devise/registrations#new', as: :new_user_registration
+    post 'users', to: 'devise/registrations#create', as: :user_registration
+  end
+
+  # Health check route
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Movie routes with nested schedules and reservations
+  resources :reservations, only: [:create]
+  resources :movies do
+    resources :schedules do
+      resources :reservations, only: [:new]
+    end
+    member do
+      get 'reservation', to: 'movies#reservation'
+    end
+  end
+
+  # Admin routes
+  namespace :admin do
+    resources :reservations, except: [:edit]
+    resources :movies do
+      resources :schedules, only: [:new, :create]
+    end
+    resources :schedules, only: [:index, :show, :edit, :update, :destroy]
+  end
+
+  # Sheets route
+  resources :sheets, only: [:index]
 end

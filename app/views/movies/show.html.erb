@@ -1,0 +1,34 @@
+<!-- app/views/movies/show.html.erb -->
+
+<h1><%= @movie.name %> - 映画作品ページ</h1>
+
+<!-- 映画の年を表示 -->
+<p>公開年: <%= @movie.year %></p>
+
+<p>作品ID: <%= @movie.id %></p>
+<p>タイトル: <%= @movie.name %></p>
+<p>概要: <%= @movie.description %></p>
+<p><img src="<%= @movie.image_url %>" alt="<%= @movie.name %>"></p>
+
+<h2>スケジュール一覧</h2>
+<ul>
+  <% @movie.schedules.each do |schedule| %>
+    <li>
+      <%= link_to "開始時刻: #{schedule.start_time.strftime("%H:%M")}, 終了時刻: #{schedule.end_time.strftime("%H:%M")}", admin_schedule_path(schedule) %>
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to "新しいスケジュールを作成する", new_admin_movie_schedule_path(@movie) %>
+
+<%= form_with url: reservation_movie_path(@movie), method: :get, local: true do |f| %>
+  <p>
+    <label for="date">日付を選択:</label>
+    <%= f.select :date, options_for_select((0..7).map { |i| [Date.today.advance(days: i).strftime("%Y-%m-%d"), Date.today.advance(days: i)] }), prompt: '日付を選択してください' %>
+  </p>
+  <p>
+    <label for="schedule_id">上映スケジュール:</label>
+    <%= f.select :schedule_id, options_for_select(@movie.schedules.map { |schedule| ["#{schedule.start_time.strftime("%H:%M")} - #{schedule.end_time.strftime("%H:%M")}", schedule.id] }), prompt: 'スケジュールを選択してください' %>
+  </p>
+  <%= f.submit "座席を予約する", class: "btn btn-primary" %>
+<% end %>

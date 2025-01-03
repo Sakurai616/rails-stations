@@ -1,0 +1,20 @@
+<div>
+  <%= f.label :schedule_id, 'スケジュール' %>
+  <%= f.collection_select :schedule_id, Schedule.all, :id, :start_time, prompt: '選択してください' %>
+</div>
+<div>
+  <%= f.label :sheet_id, '座席' %>
+  <%= f.collection_select :sheet_id, Sheet.all, :id, :name, prompt: '選択してください' %>
+</div>
+<div>
+  <%= f.label :date, '日時' %>
+  <%= f.date_field :date %>
+</div>
+<div>
+  <%= f.label :name, '名前' %>
+  <%= f.text_field :name %>
+</div>
+<div>
+  <%= f.label :email, 'メールアドレス' %>
+  <%= f.email_field :email %>
+</div>

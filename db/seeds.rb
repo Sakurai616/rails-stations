@@ -7,3 +7,11 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+rows = ['a', 'b', 'c']
+columns = (1..5).to_a
+
+rows.each do |row|
+  columns.each do |column|
+    Sheet.create(row: row, column: column)
+  end
+end

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>座席表</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid black;
+      text-align: center;
+      padding: 8px;
+    }
+    .screen {
+      text-align: center;
+      font-weight: bold;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>座席表</h1>
+  <table>
+    <tr>
+      <td colspan="5" class="screen">スクリーン</td>
+    </tr>
+    <% @sheets.each do |row, columns| %>
+      <tr>
+        <% columns.each do |sheet| %>
+          <td><%= "#{sheet.row}-#{sheet.column}" %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+</body>
+</html>

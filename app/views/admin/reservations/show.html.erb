@@ -1,0 +1,26 @@
+<h1>予約編集</h1>
+
+<%= form_with model: @reservation, url: admin_reservation_path(@reservation), method: :put do |f| %>
+  <div>
+    <%= f.label :name, '名前' %>
+    <%= f.text_field :name, value: @reservation.name %>
+  </div>
+  <div>
+    <%= f.label :email, 'メールアドレス' %>
+    <%= f.email_field :email, value: @reservation.email %>
+  </div>
+  <div>
+    <%= f.label :schedule_id, 'スケジュール' %>
+    <%= f.collection_select :schedule_id, Schedule.all, :id, :name, prompt: '選択してください', selected: @reservation.schedule_id %>
+  </div>
+  <div>
+    <%= f.label :sheet_id, '座席' %>
+    <%= f.collection_select :sheet_id, Sheet.all, :id, :name, prompt: '選択してください', selected: @reservation.sheet_id %>
+  </div>
+  <div>
+    <%= f.submit '更新する' %>
+  </div>
+<% end %>
+
+<%= link_to '予約一覧に戻る', admin_reservations_path %>
+<%= link_to '削除', admin_reservation_path(@reservation), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' } %>

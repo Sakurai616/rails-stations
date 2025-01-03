@@ -1,0 +1,7 @@
+<h1><%= @movie.name %> の座席予約</h1>
+
+<p>日付: <%= params[:date] %></p>
+<p>上映スケジュール: <%= @schedules.find(params[:schedule_id]).start_time.strftime('%H:%M') %></p>
+
+<h3>座席表</h3>
+<%= render 'sheets/seat_table', movie: @movie, schedule: @schedules.find(params[:schedule_id]), date: params[:date] %>

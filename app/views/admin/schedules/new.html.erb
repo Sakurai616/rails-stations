@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>スケジュール新規作成</title>
+  <style>
+    form {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input[type="time"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<h1>スケジュール新規作成</h1>
+
+<h2>映画情報</h2>
+<p>映画ID: <%= @movie.id %></p>
+<p>タイトル: <%= @movie.name %></p>
+
+<%= form_with model: [@movie, @movie.schedules.new], url: admin_movie_schedules_path(@movie), local: true do |form| %>
+  <label for="start_time">開始時刻</label>
+  <%= form.time_field :start_time, id: "start_time", required: true %>
+
+  <label for="end_time">終了時刻</label>
+  <%= form.time_field :end_time, id: "end_time", required: true %>
+
+  <button type="submit">作成</button>
+<% end %>
+
+<div style="margin-top: 20px;">
+  <%= link_to "映画詳細に戻る", admin_movie_path(@movie), class: "button" %>
+</div>
+
+</body>
+</html>
