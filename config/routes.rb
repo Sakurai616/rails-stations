@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   end
 
   # Health check route
-  get "up" => "rails/health#show", as: :rails_health_check
+  get 'up' => 'rails/health#show', as: :rails_health_check
 
   # Movie routes with nested schedules and reservations
   resources :reservations, only: [:create]
@@ -24,9 +24,9 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :reservations, except: [:edit]
     resources :movies do
-      resources :schedules, only: [:new, :create]
+      resources :schedules, only: %i[new create]
     end
-    resources :schedules, only: [:index, :show, :edit, :update, :destroy]
+    resources :schedules, only: %i[index show edit update destroy]
   end
 
   # Sheets route

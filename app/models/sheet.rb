@@ -5,4 +5,3 @@ class Sheet < ApplicationRecord
     "#{row}#{column}"
   end
 end
-  
