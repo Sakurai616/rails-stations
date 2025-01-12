@@ -96,25 +96,24 @@
 <body>
 <h1>映画一覧</h1>
 <div class="form-container">
-  <%= form_with url: movies_path, method: :get, local: true do %>
-    <div>
-      <label for="keyword">キーワード検索:</label>
-      <%= text_field_tag :keyword, @keyword, placeholder: "タイトルまたは概要を検索" %>
-      <%= submit_tag "検索" %>
-    </div>
-  
-    <div class="radio-group">
-      <%= radio_button_tag :is_showing, "all", @is_showing == "all", id: "is_showing_all" %>
-      <label for="is_showing_all">すべて</label>
-      
-      <%= radio_button_tag :is_showing, "1", @is_showing == "1", id: "is_showing_1" %>
-      <label for="is_showing_1">公開中</label>
-      
-      <%= radio_button_tag :is_showing, "0", @is_showing == "0", id: "is_showing_0" %>
-      <label for="is_showing_0">公開予定</label>
-    </div>
-  <% end %>
-</div>
+<%= form_with url: movies_path, method: :get, local: true do %>
+  <div>
+    <label for="keyword">キーワード検索:</label>
+    <%= text_field_tag :keyword, @keyword, placeholder: "タイトルまたは概要を検索" %>
+    <%= submit_tag "検索" %>
+  </div>
+
+  <div>
+    <%= radio_button_tag :is_showing, "all", @is_showing == "all" %>
+    <label for="is_showing_all">すべて</label>
+    
+    <%= radio_button_tag :is_showing, "1", @is_showing == "1" %>
+    <label for="is_showing_1">公開中</label>
+    
+    <%= radio_button_tag :is_showing, "0", @is_showing == "0" %>
+    <label for="is_showing_0">公開予定</label>
+  </div>
+<% end %>
 
 <div class="movies-container">
   <% @movies.each do |movie| %>
@@ -127,10 +126,6 @@
     </div>
   <% end %>
 </div>
-<% if user_signed_in? %>
   <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete, turbo_confirm: 'ログアウトしますか？' }, class: "logout-link" %>
-<% else %>
-  <%= link_to "ログイン", new_user_session_path, class: "logout-link" %>
-<% end %>
 </body>
 </html>

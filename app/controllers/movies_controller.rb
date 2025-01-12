@@ -3,21 +3,9 @@ class MoviesController < ApplicationController
 
   def index
     @movies = Movie.all
-
-    # ラジオボタンによる絞り込み
-    if params[:is_showing].present? && params[:is_showing] != 'all'
-      @movies = @movies.where(is_showing: params[:is_showing] == '1')
-    end
-
-    # 検索フォームによる絞り込み
-    if params[:keyword].present?
-      keyword = params[:keyword]
-      @movies = @movies.where('name LIKE ? OR description LIKE ?', "%#{keyword}%", "%#{keyword}%")
-    end
-
-    # 現在のラジオボタンとキーワード検索の値を保持
-    @is_showing = params[:is_showing] || 'all'
-    @keyword = params[:keyword] || ''
+    filter_movies_by_showing
+    filter_movies_by_keyword
+    set_filter_params
   end
 
   def show
@@ -42,5 +30,23 @@ class MoviesController < ApplicationController
     @movie = Movie.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to movies_path, alert: '指定された映画が見つかりません。'
+  end
+
+  def filter_movies_by_showing
+    return unless params[:is_showing].present? && params[:is_showing] != 'all'
+
+    @movies = @movies.where(is_showing: params[:is_showing] == '1')
+  end
+
+  def filter_movies_by_keyword
+    return unless params[:keyword].present?
+
+    keyword = params[:keyword]
+    @movies = @movies.where('name LIKE ? OR description LIKE ?', "%#{keyword}%", "%#{keyword}%")
+  end
+
+  def set_filter_params
+    @is_showing = params[:is_showing] || 'all'
+    @keyword = params[:keyword] || ''
   end
 end
