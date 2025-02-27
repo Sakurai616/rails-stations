@@ -2,6 +2,7 @@ module Admin
   class SchedulesController < ApplicationController
     before_action :set_schedule, only: %i[show edit update destroy]
     before_action :set_movie, only: %i[new create]
+    before_action :set_theaters, only: %i[new create]
 
     # スケジュール一覧
     def index
@@ -22,12 +23,14 @@ module Admin
       if @schedule.save
         redirect_to admin_movie_path(@movie), notice: 'スケジュールを作成しました。'
       else
-        render :new
+        render :new, status: :unprocessable_entity
       end
     end
 
     # 編集フォーム
-    def edit; end
+    def edit
+      @theaters = Theater.includes(:screens).all
+    end
 
     # 更新処理
     def update
@@ -54,8 +57,12 @@ module Admin
       @movie = Movie.find(params[:movie_id])
     end
 
+    def set_theaters
+      @theaters = Theater.includes(:screens).all
+    end
+
     def schedule_params
-      params.require(:schedule).permit(:start_time, :end_time)
+      params.require(:schedule).permit(:start_time, :end_time, :screen_id)
     end
   end
 end

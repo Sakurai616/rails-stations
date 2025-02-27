@@ -52,11 +52,11 @@ module Admin
     end
 
     def reservation_params
-      params.require(:reservation).permit(:schedule_id, :sheet_id, :name, :email, :date)
+      params.require(:reservation).permit(:schedule_id, :sheet_id, :date, :name, :email, :user_id)
     end
 
     def reservation_update_params
-      params.require(:reservation).permit(:schedule_id, :sheet_id, :name, :email)
+      params.require(:reservation).permit(:schedule_id, :sheet_id, :name, :email, :user_id)
     end
   end
 end

@@ -42,7 +42,23 @@
 <p>映画ID: <%= @movie.id %></p>
 <p>タイトル: <%= @movie.name %></p>
 
+<% if @schedule.errors.any? %>
+  <div style="color: red;">
+    <ul>
+      <% @schedule.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <%= form_with model: [@movie, @movie.schedules.new], url: admin_movie_schedules_path(@movie), local: true do |form| %>
+  <label for="theater">劇場を選択</label>
+  <%= select_tag "theater_id", options_from_collection_for_select(Theater.all, :id, :name), id: "theater", prompt: "劇場を選択してください" %>
+
+  <label for="screen">スクリーンを選択</label>
+  <%= form.collection_select :screen_id, Screen.all, :id, :number, { prompt: "スクリーンを選択してください" }, id: "screen" %>
+
   <label for="start_time">開始時刻</label>
   <%= form.time_field :start_time, id: "start_time", required: true %>
 
@@ -50,6 +66,28 @@
   <%= form.time_field :end_time, id: "end_time", required: true %>
 
   <button type="submit">作成</button>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const theaterSelect = document.getElementById("theater");
+    const screenSelect = document.getElementById("screen");
+
+    theaterSelect.addEventListener("change", function () {
+      const theaterId = this.value;
+      fetch(`/admin/theaters/${theaterId}/screens`)
+        .then(response => response.json())
+        .then(data => {
+          screenSelect.innerHTML = '<option value="">スクリーンを選択してください</option>';
+          data.forEach(screen => {
+            const option = document.createElement("option");
+            option.value = screen.id;
+            option.textContent = `スクリーン ${screen.number}`;
+            screenSelect.appendChild(option);
+          });
+        });
+    });
+  });
+  </script>
 <% end %>
 
 <div style="margin-top: 20px;">

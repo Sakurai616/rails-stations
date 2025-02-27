@@ -3,7 +3,6 @@ class ReservationsController < ApplicationController
   before_action :authenticate_user!
 
   def new
-    @sheets = Sheet.all
     @sheet = Sheet.find_by(id: params[:sheet_id])
     @reservation = Reservation.new
 
@@ -12,6 +11,7 @@ class ReservationsController < ApplicationController
 
   def create
     @reservation = Reservation.new(reservation_params)
+    @reservation.user = current_user # ユーザーを設定
 
     if @reservation.save
       handle_successful_reservation

@@ -62,9 +62,13 @@
           <td><%= movie.updated_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
           <td>
             <% if movie.schedules.any? %>
-              <% movie.schedules.each do |schedule| %>
-                <p><%= schedule.start_time.year %>年</p>
-              <% end %>
+              <ul>
+                <% movie.schedules.each do |schedule| %>
+                  <li>
+                    <%= schedule.start_time.strftime('%H:%M') %> 〜 <%= schedule.end_time.strftime('%H:%M') %>
+                  </li>  
+                <% end %>
+              </ul>
             <% else %>
               <p>スケジュールなし</p>
             <% end %>

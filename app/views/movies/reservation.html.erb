@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>座席表</title>
+  <title><%= @schedule.screen.theater.name %> 座席表</title>
   <style>
     table {
       border-collapse: collapse;
@@ -24,7 +24,7 @@
   </style>
 </head>
 <body>
-  <h1>座席表</h1>
+  <h1><%= @schedule.screen.theater.name %> 座席表</h1>
   <table>
     <!-- スクリーンを表示 -->
     <tr>

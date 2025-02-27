@@ -1,34 +1,80 @@
-<!-- app/views/movies/show.html.erb -->
-
 <h1><%= @movie.name %> - 映画作品ページ</h1>
 
-<!-- 映画の年を表示 -->
 <p>公開年: <%= @movie.year %></p>
-
-<p>作品ID: <%= @movie.id %></p>
 <p>タイトル: <%= @movie.name %></p>
 <p>概要: <%= @movie.description %></p>
 <p><img src="<%= @movie.image_url %>" alt="<%= @movie.name %>"></p>
 
 <h2>スケジュール一覧</h2>
-<ul>
-  <% @movie.schedules.each do |schedule| %>
+
+<!-- 劇場選択フォーム -->
+<p>
+  <label for="theater_select">劇場を選択:</label>
+  <%= select_tag "theater_id",
+        options_from_collection_for_select(@theaters, :id, :name, @selected_theater&.id),
+        id: "theater_select" %>
+</p>
+
+<!-- スケジュールリスト -->
+<ul id="schedule_list">
+  <% @schedules.each do |schedule| %>
     <li>
-      <%= link_to "開始時刻: #{schedule.start_time.strftime("%H:%M")}, 終了時刻: #{schedule.end_time.strftime("%H:%M")}", admin_schedule_path(schedule) %>
+      <%= link_to "開始: #{schedule.start_time.strftime('%H:%M')} 終了: #{schedule.end_time.strftime('%H:%M')}", admin_schedule_path(schedule) %>
     </li>
   <% end %>
 </ul>
 
-<%= link_to "新しいスケジュールを作成する", new_admin_movie_schedule_path(@movie) %>
-
-<%= form_with url: reservation_movie_path(@movie), method: :get, local: true do |f| %>
+<!-- 予約フォーム -->
+<%= form_with model: @movie, url: reservation_movie_path(@movie), method: :get, local: true do |f| %>
   <p>
-    <label for="date">日付を選択:</label>
-    <%= f.select :date, options_for_select((0..7).map { |i| [Date.today.advance(days: i).strftime("%Y-%m-%d"), Date.today.advance(days: i)] }), prompt: '日付を選択してください' %>
+    <label for="<%= f.object_name %>_date">日付を選択:</label>
+    <%= f.select :date, options_for_select((0..7).map { |i| [Date.today.advance(days: i), Date.today.advance(days: i)] }), prompt: '日付を選択してください', id: "#{f.object_name}_date" %>
   </p>
   <p>
-    <label for="schedule_id">上映スケジュール:</label>
-    <%= f.select :schedule_id, options_for_select(@movie.schedules.map { |schedule| ["#{schedule.start_time.strftime("%H:%M")} - #{schedule.end_time.strftime("%H:%M")}", schedule.id] }), prompt: 'スケジュールを選択してください' %>
+    <label for="<%= f.object_name %>_schedule_id">上映スケジュール:</label>
+    <%= f.select :schedule_id, options_for_select(@schedules.map { |schedule| ["#{schedule.start_time.strftime("%H:%M")} - #{schedule.end_time.strftime("%H:%M")}", schedule.id] }), prompt: 'スケジュールを選択してください', id: "#{f.object_name}_schedule_id" %>
   </p>
   <%= f.submit "座席を予約する", class: "btn btn-primary" %>
 <% end %>
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    const theaterSelect = document.getElementById("theater_select");
+    const scheduleList = document.getElementById("schedule_list");
+    const scheduleSelect = document.getElementById("<%= @movie.model_name.param_key %>_schedule_id");
+
+    if (!theaterSelect || !scheduleList || !scheduleSelect) return;
+
+    function updateSchedules() {
+      const theaterId = theaterSelect.value;
+      const movieId = "<%= @movie.id %>";
+
+      fetch(`/movies/${movieId}/schedules?theater_id=${theaterId}`)
+        .then(response => response.json())
+        .then(data => {
+          scheduleList.innerHTML = "";
+          scheduleSelect.innerHTML = '<option value="">スケジュールを選択してください</option>';
+
+          data.forEach(schedule => {
+            // スケジュールリストの更新
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `<a href="/admin/schedules/${schedule.id}"> 開始: ${schedule.start_time} 終了: ${schedule.end_time}</a>`;
+            scheduleList.appendChild(listItem);
+
+            // スケジュール選択フォームの更新
+            const option = document.createElement("option");
+            option.value = schedule.id;
+            option.textContent = `${schedule.start_time} - ${schedule.end_time}`;
+            scheduleSelect.appendChild(option);
+          });
+        })
+        .catch(error => console.error("スケジュール取得エラー:", error));
+    }
+
+    // 劇場変更時にスケジュールを更新
+    theaterSelect.addEventListener("change", updateSchedules);
+
+    // 初回表示時にスケジュールを更新
+    updateSchedules();
+  });
+</script>

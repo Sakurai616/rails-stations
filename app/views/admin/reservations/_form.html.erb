@@ -1,6 +1,8 @@
 <div>
   <%= f.label :schedule_id, 'スケジュール' %>
-  <%= f.collection_select :schedule_id, Schedule.all, :id, :start_time, prompt: '選択してください' %>
+  <%= f.collection_select :schedule_id, Schedule.all, :id, 
+    lambda { |schedule| "#{schedule.start_time.strftime('%H:%M')} - #{schedule.end_time.strftime('%H:%M')}" }, 
+    prompt: '選択してください' %>
 </div>
 <div>
   <%= f.label :sheet_id, '座席' %>
@@ -11,10 +13,6 @@
   <%= f.date_field :date %>
 </div>
 <div>
-  <%= f.label :name, '名前' %>
-  <%= f.text_field :name %>
-</div>
-<div>
-  <%= f.label :email, 'メールアドレス' %>
-  <%= f.email_field :email %>
+  <%= f.label :user_id, 'ユーザー' %>
+  <%= f.collection_select :user_id, User.all, :id, :name, prompt: 'ユーザーを選択してください' %>
 </div>

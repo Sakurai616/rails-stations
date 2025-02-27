@@ -1,1 +1,24 @@
 inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Exclude:
+    - 'db/schema.rb'
+    - 'db/migrate/*'
+    - 'spec/factories/*'
+    - 'spec/station[0-9][0-9]/*'
+    - 'config/environments/production.rb'
+    - 'config/puma.rb'
+    - 'config/initializers/devise.rb'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/routes.rb'
+    - 'config/environments/*'
+

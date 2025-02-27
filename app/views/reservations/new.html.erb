@@ -1,33 +1,38 @@
 <div>
   <h1>ご予約ページ</h1>
+  <p>
+    <p>選択中の映画</p>
+    <p><%= @movie.name %></p>
+  </p>
+  <p>
+    <p>選択中の日時</p>
+    <p><%= params[:date] %></p>
+  </p>
+  <p>
+    <p>選択中のsheet_id</p>
+    <p><%= params[:sheet_id] %></p>
+  </p>
+  <p>
+    <p>選択中のschedule_id</p>
+    <p><%= @schedule.id %></p>
+  </p>
+
+  <%= form_with model: @reservation, url: reservations_path(@movie, @schedule), method: :post do |f| %>
+    <%= f.hidden_field :date, value: params[:date] %>
+    <%= f.hidden_field :sheet_id, value: params[:sheet_id] %>
+    <%= f.hidden_field :schedule_id, value: params[:schedule_id] %>
+    <%= f.hidden_field :name, value: current_user.name %>
+    <%= f.hidden_field :email, value: current_user.email %>
 
     <p>
-      <p>選択中の映画</p>
-      <p><%= @movie.name %></p>
-    </p>
-    <p>
-      <p>選択中の日時</p>
-      <p><%= params[:date] %></p>
-    </p>
-      <p>選択中のsheet_id</p>
-      <p><%= params[:sheet_id] %></p>
-    </p>
-    <p>
-      <p>選択中のschedule_id</p>
-      <p><%= @schedule.id %></p>
-    </p>
-  <%= form_with model: @reservation, url: reservations_path(@movie, @schedule), method: :post do |f| %>
-      <p><%= f.hidden_field :date, value: params[:date] %></p>
-      <p><%= f.hidden_field :sheet_id, value: params[:sheet_id] %></p>
-      <p><%= f.hidden_field :schedule_id, value: params[:schedule_id] %></p>
-    <p>
       <p>氏名</p>
-      <p><%= f.text_field :name, placeholder: "入力してください", required: true %></p>
+      <p><%= current_user.name %></p>
     </p>
     <p>
       <p>メールアドレス</p>
-      <p><%= f.text_field :email, placeholder: "入力してください", required: true %></p>
+      <p><%= current_user.email %></p>
     </p>
+
     <%= f.submit "予約を確定する"%>
   <% end %>
 </div>

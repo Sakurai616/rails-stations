@@ -119,13 +119,18 @@
   <% @movies.each do |movie| %>
     <div class="movie-card">
       <img src="<%= movie.image_url %>" alt="<%= movie.name %>のポスター">
-      <h3><%= movie.name %></h3>
+      <h3><h3><%= link_to movie.name, movie_path(movie) %></h3>
       <p><%= movie.description %></p>
       <p><%= movie.year %>年</p>
       <p><%= movie.is_showing ? "公開中" : "公開予定" %></p>
     </div>
   <% end %>
 </div>
+
+<% if user_signed_in? %>
   <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete, turbo_confirm: 'ログアウトしますか？' }, class: "logout-link" %>
+<% else %>
+  <%= link_to "ログイン", new_user_session_path, class: "logout-link" %>
+<% end %>
 </body>
 </html>

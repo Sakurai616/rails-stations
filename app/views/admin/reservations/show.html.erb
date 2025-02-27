@@ -2,12 +2,8 @@
 
 <%= form_with model: @reservation, url: admin_reservation_path(@reservation), method: :put do |f| %>
   <div>
-    <%= f.label :name, '名前' %>
-    <%= f.text_field :name, value: @reservation.name %>
-  </div>
-  <div>
-    <%= f.label :email, 'メールアドレス' %>
-    <%= f.email_field :email, value: @reservation.email %>
+    <%= f.label :user_id, 'ユーザー' %>
+    <%= f.collection_select :user_id, User.all, :id, :name, prompt: 'ユーザーを選択してください' %>
   </div>
   <div>
     <%= f.label :schedule_id, 'スケジュール' %>
