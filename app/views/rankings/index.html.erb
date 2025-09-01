@@ -1,0 +1,20 @@
+<h1><%= @latest_date %>時点の映画予約数ランキング</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>順位</th>
+      <th>映画名</th>
+      <th>予約数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @rankings.each_with_index do |ranking, index| %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= link_to ranking.movie.name, movie_path(ranking.movie) %></td>
+        <td><%= ranking.reservation_count %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -16,7 +16,7 @@ class Reservation < ApplicationRecord
   private
 
   def unique_reservation
-    return unless Reservation.exists?(schedule_id: schedule_id, sheet_id: sheet_id, date: date)
+    return unless Reservation.where(schedule_id: schedule_id, sheet_id: sheet_id, date: date).where.not(id: id).exists?
 
     errors.add(:base, 'その座席はすでに予約済みです。')
   end

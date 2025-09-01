@@ -5,36 +5,40 @@
 <p>概要: <%= @movie.description %></p>
 <p><img src="<%= @movie.image_url %>" alt="<%= @movie.name %>"></p>
 
-<h2>スケジュール一覧</h2>
+<% if @movie.is_showing %>
+  <h2>スケジュール一覧</h2>
 
-<!-- 劇場選択フォーム -->
-<p>
-  <label for="theater_select">劇場を選択:</label>
-  <%= select_tag "theater_id",
-        options_from_collection_for_select(@theaters, :id, :name, @selected_theater&.id),
-        id: "theater_select" %>
-</p>
+  <!-- 劇場選択フォーム -->
+  <p>
+    <label for="theater_select">劇場を選択:</label>
+    <%= select_tag "theater_id",
+          options_from_collection_for_select(@theaters, :id, :name, @selected_theater&.id),
+          id: "theater_select" %>
+  </p>
 
-<!-- スケジュールリスト -->
-<ul id="schedule_list">
-  <% @schedules.each do |schedule| %>
-    <li>
-      <%= link_to "開始: #{schedule.start_time.strftime('%H:%M')} 終了: #{schedule.end_time.strftime('%H:%M')}", admin_schedule_path(schedule) %>
-    </li>
+  <!-- スケジュールリスト -->
+  <ul id="schedule_list">
+    <% @schedules.each do |schedule| %>
+      <li>
+        <%= link_to "開始: #{schedule.start_time.strftime('%H:%M')} 終了: #{schedule.end_time.strftime('%H:%M')}", admin_schedule_path(schedule) %>
+      </li>
+    <% end %>
+  </ul>
+
+  <!-- 予約フォーム -->
+  <%= form_with model: @movie, url: reservation_movie_path(@movie), method: :get, local: true do |f| %>
+    <p>
+      <label for="<%= f.object_name %>_date">日付を選択:</label>
+      <%= f.select :date, options_for_select((0..7).map { |i| [Date.today.advance(days: i), Date.today.advance(days: i)] }), prompt: '日付を選択してください', id: "#{f.object_name}_date" %>
+    </p>
+    <p>
+      <label for="<%= f.object_name %>_schedule_id">上映スケジュール:</label>
+      <%= f.select :schedule_id, options_for_select(@schedules.map { |schedule| ["#{schedule.start_time.strftime("%H:%M")} - #{schedule.end_time.strftime("%H:%M")}", schedule.id] }), prompt: 'スケジュールを選択してください', id: "#{f.object_name}_schedule_id" %>
+    </p>
+    <%= f.submit "座席を予約する", class: "btn btn-primary" %>
   <% end %>
-</ul>
-
-<!-- 予約フォーム -->
-<%= form_with model: @movie, url: reservation_movie_path(@movie), method: :get, local: true do |f| %>
-  <p>
-    <label for="<%= f.object_name %>_date">日付を選択:</label>
-    <%= f.select :date, options_for_select((0..7).map { |i| [Date.today.advance(days: i), Date.today.advance(days: i)] }), prompt: '日付を選択してください', id: "#{f.object_name}_date" %>
-  </p>
-  <p>
-    <label for="<%= f.object_name %>_schedule_id">上映スケジュール:</label>
-    <%= f.select :schedule_id, options_for_select(@schedules.map { |schedule| ["#{schedule.start_time.strftime("%H:%M")} - #{schedule.end_time.strftime("%H:%M")}", schedule.id] }), prompt: 'スケジュールを選択してください', id: "#{f.object_name}_schedule_id" %>
-  </p>
-  <%= f.submit "座席を予約する", class: "btn btn-primary" %>
+<% else %>
+  <p>まだこの映画は公開されていません。</p>
 <% end %>
 
 <script>

@@ -41,6 +41,18 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  # Looking to send emails in production? Check out our Email API/SMTP product!
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    user_name: '1b8143b71b97c9',
+    password: '8a8eba6402b4d5',
+    address: 'sandbox.smtp.mailtrap.io',
+    host: 'sandbox.smtp.mailtrap.io',
+    port: '2525',
+    authentication: :login
+  }
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 

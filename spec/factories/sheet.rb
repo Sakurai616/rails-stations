@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :sheet do
-    sequence(:column) { |n| n }
-    sequence(:row) { 'a' }
+    row { 'A' }
+    column { 1 }
+
+    association :screen
   end
 end

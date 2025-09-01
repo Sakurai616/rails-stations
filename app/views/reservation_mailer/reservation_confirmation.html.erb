@@ -1,0 +1,12 @@
+<p><%= @user.name %> 様</p>
+
+<p>以下の内容で映画の予約を完了しました。</p>
+
+<ul>
+  <li><strong>映画館:</strong> <%= @theater.name %></li>
+  <li><strong>映画タイトル:</strong> <%= @movie.name %></li>
+  <li><strong>上映日時:</strong> <%= @schedule.start_time.strftime('%Y-%m-%d %H:%M') %></li>
+  <li><strong>お名前:</strong> <%= @user.name %> 様</li>
+</ul>
+
+<p>ご来場をお待ちしております。</p>

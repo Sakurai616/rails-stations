@@ -1,0 +1,77 @@
+<h1>予約の変更</h1>
+
+<%= form_with model: @reservation, local: true do |f| %>
+    <div>
+        <%= f.label :映画 %>
+        <%= f.collection_select :schedule_id, @movies, :id, :name, { include_blank: '選択してください' }, { class: 'form-control', id: 'movie_select' } %>
+    </div>
+
+    <div>
+        <%= f.label :スケジュール %>
+        <%= f.collection_select :schedule_id, @schedules, :id, 
+                lambda { |schedule| "#{schedule.start_time.strftime('%H:%M')} - #{schedule.end_time.strftime('%H:%M')}" }, 
+                { include_blank: '映画を選択してください' }, 
+                { class: 'form-control', id: 'schedule_select', selected: @reservation.schedule_id } %>
+    </div>
+
+    <div>
+        <%= f.label :日付 %>
+        <%= f.date_field :date, value: @reservation.date, class: 'form-control' %>
+    </div>
+
+    <div>
+        <%= f.label :座席 %>
+        <%= f.collection_select :sheet_id, @available_sheets, :id, :name, { include_blank: '選択してください' }, { class: 'form-control', id: 'sheet_select', selected: @reservation.sheet_id } %>
+    </div>
+
+    <%= f.submit "予約を更新", class: 'btn btn-primary' %>
+<% end %>
+
+<%= link_to 'キャンセル', user_path(current_user), class: 'btn btn-secondary' %>
+
+<script>
+  // 映画が選択されたときにスケジュールを更新する
+  document.getElementById('movie_select').addEventListener('change', function() {
+    var movieId = this.value;
+    if (movieId) {
+      fetch(`/schedules?movie_id=${movieId}`)
+        .then(response => response.json())
+        .then(data => {
+          var scheduleSelect = document.getElementById('schedule_select');
+          scheduleSelect.innerHTML = '<option value="">スケジュールを選択してください</option>';
+          data.schedules.forEach(function(schedule) {
+            var option = document.createElement('option');
+            option.value = schedule.id;
+            var startTime = new Date(schedule.start_time).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+            var endTime = new Date(schedule.end_time).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+            option.textContent = `${startTime} - ${endTime}`;
+            scheduleSelect.appendChild(option);
+          });
+  
+          // 新しいスケジュールに基づいて座席も更新する
+          updateSeatsForSchedule(data.schedules[0].id);
+        });
+    } else {
+      document.getElementById('schedule_select').innerHTML = '<option value="">映画を選択してください</option>';
+    }
+  });
+  
+  function updateSeatsForSchedule(scheduleId) {
+    fetch(`/sheets/available?schedule_id=${scheduleId}`)
+    .then(response => response.json())
+    .then(data => {
+      var sheetSelect = document.getElementById('sheet_select');
+      sheetSelect.innerHTML = '<option value="">座席を選択してください</option>';
+      data.sheets.forEach(function(sheet) {
+        var option = document.createElement('option');
+        option.value = sheet.id;
+        option.textContent = sheet.row + sheet.column;
+        sheetSelect.appendChild(option);
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('座席情報の取得に失敗しました');
+    });
+  }
+</script>

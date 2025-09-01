@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :theater do
+  factory :like do
     
   end
 end

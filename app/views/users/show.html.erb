@@ -1,0 +1,23 @@
+<h1><%= @user.name %> さんのプロフィール</h1>
+
+<p><strong>名前:</strong> <%= @user.name %></p>
+<p><strong>メール:</strong> <%= @user.email %></p>
+
+<h2>予約一覧</h2>
+
+<% if @reservations.any? %>
+  <% @reservations.each do |reservation| %>
+    <p>
+      <strong>映画:</strong> <%= reservation.schedule.movie.name %><br>
+      <strong>上映日時:</strong> <%= reservation.date %> 
+      (<%= reservation.schedule.start_time.strftime('%H:%M') %> - <%= reservation.schedule.end_time.strftime('%H:%M') %>)<br>
+      <strong>座席:</strong> <%= "#{reservation.sheet.row}列#{reservation.sheet.column}番" %><br>
+      <%= link_to '予約を変更', edit_reservation_path(reservation), class: 'btn btn-warning' %>
+      <%= link_to '予約をキャンセル', reservation_path(reservation), method: :delete, data: { confirm: '本当にキャンセルしますか?' }, class: 'btn btn-danger' %>
+    </p>
+  <% end %>
+<% else %>
+  <p>予約はありません</p>
+<% end %>
+
+<%= link_to "映画一覧へ戻る", movies_path, class: "btn btn-secondary" %>

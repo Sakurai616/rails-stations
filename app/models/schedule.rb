@@ -17,6 +17,10 @@ class Schedule < ApplicationRecord
     errors.add(:base, '入力された上映時間中に他の作品が上映されています')
   end
 
+  def public_attributes
+    attributes.except('screen_id') # スクリーン情報を除外
+  end
+
   private
 
   def no_overlapping_schedules?

@@ -1,16 +1,23 @@
 Rails.application.routes.draw do
-  devise_for :users, skip: [:registrations]
+  root 'rankings#index'
 
-  as :user do
-    get 'users/new', to: 'devise/registrations#new', as: :new_user_registration
-    post 'users', to: 'devise/registrations#create', as: :user_registration
-  end
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+  }
+
+  resources :users, only: [:show]
 
   # Health check route
   get 'up' => 'rails/health#show', as: :rails_health_check
 
   # Movie routes with nested schedules and reservations
-  resources :reservations, only: [:create]
+  resources :reservations, only: %i[create destroy edit update]
+  resources :schedules, only: [:index] # スケジュールの取得用にindexアクションを設定
+  resources :sheets do
+    collection do
+      get 'available' # 利用可能な座席を取得するためのルート
+    end
+  end
   resources :movies do
     get 'schedules', on: :member
     resources :schedules do

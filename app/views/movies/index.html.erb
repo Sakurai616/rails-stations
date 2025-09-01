@@ -80,16 +80,39 @@
       margin: 5px 0;
       color: #666;
     }
-    .logout-link {
+    .user-dropdown {
       position: absolute;
       top: 10px;
       right: 20px;
-      color: #d9534f;
-      font-weight: bold;
-      text-decoration: none;
+      font-size: 14px;
+      background-color: #007BFF;
+      color: white;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
     }
-    .logout-link:hover {
-      color: #c9302c;
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 30px;
+      right: 0;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      border-radius: 4px;
+      width: 200px;
+    }
+    .user-dropdown:hover .dropdown-menu {
+      display: block;
+    }
+    .logout-link, .profile-link {
+      display: block;
+      color: #333;
+      text-decoration: none;
+      padding: 8px;
+    }
+    .logout-link:hover, .profile-link:hover {
+      background-color: #f1f1f1;
     }
   </style>
 </head>
@@ -119,7 +142,7 @@
   <% @movies.each do |movie| %>
     <div class="movie-card">
       <img src="<%= movie.image_url %>" alt="<%= movie.name %>のポスター">
-      <h3><h3><%= link_to movie.name, movie_path(movie) %></h3>
+      <h3><%= link_to movie.name, movie_path(movie) %></h3>
       <p><%= movie.description %></p>
       <p><%= movie.year %>年</p>
       <p><%= movie.is_showing ? "公開中" : "公開予定" %></p>
@@ -128,9 +151,15 @@
 </div>
 
 <% if user_signed_in? %>
-  <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete, turbo_confirm: 'ログアウトしますか？' }, class: "logout-link" %>
+  <div class="user-dropdown">
+    <span>ユーザー</span>
+    <div class="dropdown-menu">
+      <%= link_to "プロフィール", user_path(current_user), class: "profile-link" %>
+      <%= link_to "ログアウト", destroy_user_session_path, method: :delete, class: "logout-link", data: { turbo_method: :delete, turbo_confirm: 'ログアウトしますか？' } %>
+    </div>
+  </div>
 <% else %>
-  <%= link_to "ログイン", new_user_session_path, class: "logout-link" %>
+  <%= link_to "ログイン", new_user_session_path, class: "user-dropdown" %>
 <% end %>
 </body>
 </html>

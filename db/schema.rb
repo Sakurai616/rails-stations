@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_22_033053) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_09_132706) do
+  create_table "likes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "movie_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["movie_id"], name: "index_likes_on_movie_id"
+    t.index ["user_id", "movie_id"], name: "index_likes_on_user_and_movie", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
   create_table "movies", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", limit: 160, null: false, comment: "映画のタイトル。邦題・洋題は一旦考えなくてOK"
     t.string "year", limit: 45, comment: "公開年"
@@ -20,6 +30,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_22_033053) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_movies_on_name"
+  end
+
+  create_table "rankings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "movie_id", null: false
+    t.integer "reservation_count", null: false
+    t.date "date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["movie_id", "date"], name: "index_rankings_on_movie_id_and_date", unique: true
+    t.index ["movie_id"], name: "index_rankings_on_movie_id"
   end
 
   create_table "reservations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -85,6 +105,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_22_033053) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "likes", "movies"
+  add_foreign_key "likes", "users"
+  add_foreign_key "rankings", "movies"
   add_foreign_key "reservations", "schedules"
   add_foreign_key "reservations", "sheets"
   add_foreign_key "reservations", "users"

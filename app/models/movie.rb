@@ -1,5 +1,8 @@
 class Movie < ApplicationRecord
   has_many :schedules, dependent: :destroy
+  has_many :reservations, through: :schedules
+  has_many :rankings, dependent: :destroy
+  has_many :likes, dependent: :destroy
 
   validates :name, presence: true, uniqueness: { message: 'タイトルが重複しています。' }
   validates :year, presence: true, length: { maximum: 45 }

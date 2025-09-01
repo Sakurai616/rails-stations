@@ -1,0 +1,12 @@
+<%= @user.name %> 様
+
+この度は映画予約をご利用いただきありがとうございます。
+以下の映画の予約をされていますので、お忘れなく！
+
+映画館: <%= @theater.name %>
+映画タイトル: <%= @movie.name %>
+上映日時: <%= @schedule.start_time.strftime('%Y-%m-%d %H:%M') %>
+お名前: <%= @user.name %> 様
+座席: <%= @reservation.sheet.row %>-<%= @reservation.sheet.column %>
+
+お楽しみください！

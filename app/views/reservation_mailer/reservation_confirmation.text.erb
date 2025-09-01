@@ -1,0 +1,10 @@
+<%= @user.name %> 様
+
+以下の内容で映画の予約を完了しました。
+
+映画館: <%= @theater.name %>
+映画タイトル: <%= @movie.name %>
+上映日時: <%= @schedule.start_time.strftime('%Y-%m-%d %H:%M') %>
+お名前: <%= @user.name %> 様
+
+ご来場をお待ちしております。
